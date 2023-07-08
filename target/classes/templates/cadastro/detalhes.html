@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"  media="screen,projection"/>
+	</head>
+	
+	<body style="margin-left: 4%; margin-top: 3%">
+	
+		<h2>Detalhes de <span th:text="${objetoPessoa.nome}"></span></h2>
+		
+		<br> <br>
+		
+			<table>
+				<tr>
+					<td> <h5>ID:</h5> </td>
+					<td> <span id="idPessoa" th:text = "${objetoPessoa.id}"></span> </td>
+				</tr>
+				<tr>
+					<td> <h5>Nome:</h5> </td>
+					<td> <span th:text = "${objetoPessoa.nome}"></span> </td>
+				</tr>
+				<tr>
+					<td> <h5>Data de nascimento:</h5> </td>
+					<td> <span th:text = "${dataNascimento}"></span> </td>
+				</tr>
+				<tr>
+					<td> <h5>Endereço:</h5> </td>
+					<td> <span th:text = "${objetoPessoa.logradouro.nomeLogradouro}"></span> </td>
+				</tr>
+				<tr>
+					<td> <h5>Cidade:</h5> </td>
+					<td> <span th:text="${objetoPessoa.logradouro.localidade}"></span> </td>
+				</tr>
+				<tr>
+					<td> <h5>Baixar currículo -></h5> </td>
+					<td>
+						<a th:if="${objetoPessoa.curriculo != null}" th:href ="@{/baixarcurriculo/{idPessoa}(idPessoa=${objetoPessoa.id})}">
+						 	<button>Download</button>
+						</a> 
+						<span th:if="${objetoPessoa.curriculo == null}">Sem arquivo</span>
+					</td>
+				</tr>
+			</table>
+			
+		<br> <br>
+		
+		<a href = "/listarpessoas"> <button class="waves-effect waves-light btn"> Voltar para a tela de cadastro <i class="material-icons left">reply</i> </button> </a>
+		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+	</body>
+	
+</html>

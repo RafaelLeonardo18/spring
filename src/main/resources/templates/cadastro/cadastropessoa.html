@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://thymeleaf.org/extras/spring-security">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<title>Insert title here</title>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"  media="screen,projection"/>
+	</head>
+	
+	<body style="margin-left: 5%; margin-right:5%; margin-top: 4%; margin-bottom: 4%">
+	
+		<fieldset>
+			<legend style="font-size:40px; text-align:center"> &nbsp Cadastro de Pessoa &nbsp </legend>
+			<br>
+			<!-- Formulário de cadastro -->
+			<form id = "cadastroForm" th:action="@{/salvarpessoa}" method="post" enctype="multipart/form-data">
+				<!-- Id do usuário -->
+				<input type="hidden" th:field="${objetoPessoa.id}">
+			
+				<table id="tableCadastroForm">
+					<tr>
+						<td> <h6>Nome</h6> </td>
+						<td> <input type="text" id="nome" name="nome" required="required" th:field="${objetoPessoa.nome}"> </td>
+					</tr>
+					<tr>
+						<td> <h6>Data de nascimento</h6> </td>
+						<td> <input type="date" id="dataNascimento" required="required" name="dataNascimento" th:filed="${objetoPessoa.dataNascimento}"> </td>
+					</tr>
+					<tr>
+						<td> <h6>CEP</h6> </td>
+						<td> <input type="text" id="cep" name="cep" required="required" th:field="${objetoLogradouro.cep}"> </td>
+					</tr>
+					<tr>
+						<td> <h6>Logradouro</h6> </td>
+						<td> <input type="text" id="nomeLogradouro" name="nomeLogradouro" required="required" th:field="${objetoLogradouro.nomeLogradouro}"> </td>
+					</tr>
+					<tr>
+						<td> <h6>Número predial</h6> </td>
+						<td> <input type="text" id="numeroLogradouro" name="numeroLogradouro" required="required" th:field="${objetoLogradouro.numeroLogradouro}"> </td>
+					</tr>
+					<tr>
+						<td> <h6>Complemento</h6> </td>
+						<td> <input type="text" id="complemento" name="complemento" required="required" th:field="${objetoLogradouro.complemento}"> </td>
+					</tr>
+					<tr>
+						<td> <h6>Bairro</h6> </td>
+						<td> <input type="text" id="bairro" name="bairro" required="required" th:field="${objetoLogradouro.bairro}"> </td>
+					</tr>
+					<tr>
+						<td> <h6>Localidade</h6> </td>
+						<td> <input type="text" id="localidade" name="localidade" required="required" th:field="${objetoLogradouro.localidade}"> </td>
+					</tr>
+					<tr>
+						<td> <h6>UF</h6> </td>
+						<td> <input type="text" id="uf" name="uf" required="required" th:field="${objetoLogradouro.uf}"> </td>
+					</tr>
+					<tr>
+						<td> <h6>Perfil</h6> </td>
+						<td> <select id="roles" th:field="${objetoPessoa.roles}" multiple="multiple">
+							 	<option th:each="role : ${roles}" th:value="${role.id}" th:name="${role.roleName}" th:text="${role.roleName}"> </option>
+							 </select>	</td>
+					</tr>
+					<tr>
+						<td> <h6>Currículo</h6> </td>
+						<td> <input type="file" id="file" name="file" accept="application/pdf"> </td>
+					</tr>
+					<tr>
+						<td> <button type="submit" id="salvar" name="salvar" class="waves-effect waves-light btn"> Salvar <i class="material-icons right">save</i> </button> </td>
+					</tr>
+				</table>
+			</form>
+			<!-- Fim do formulário de cadastro -->
+		</fieldset>
+		
+		<br>
+		<fieldset>
+			<legend style="font-size:30px"> Pesquisar pessoas </legend>
+			<!-- Campo para pesquisa de nomes -->
+			<form action="pesquisarnomes" method="post">
+				<table class="striped">
+					<tr>
+						<td> <input type="text" name="pesquisaNome" placeholder="Pesquisa por nome" th:value="${pesquisaNome}"> </td>
+						<td> <button type="submit" class="waves-effect waves-light btn">Pesquisar <i class="material-icons right">search</i></button> </td>
+					</tr>
+				</table> 
+			</form>
+			<!-- Fim do Campo para pesquisa de nomes -->
+		</fieldset>
+		
+		<br> <br>
+		
+		<table class="striped">
+			<thead>
+				<tr>
+					<th> <span th:if="${pessoas != null}">ID</span> </th>
+					<th> <span th:if="${pessoas != null}">Nome</span> </th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each = "pessoa : ${pessoas.content}">
+					<td th:text = "${pessoa.id}"> </td>
+					<td> <a th:href ="@{/detalhes/{idPessoa}(idPessoa=${pessoa.id})}" title="Clique para ver detalhes"> <span  th:text = "${pessoa.nome}"></span> </a> </td>
+					<td> <a th:href = "@{/telefone/{idPessoa}(idPessoa=${pessoa.id})}"> <button id="btnTelefone" class="waves-effect waves-light btn" title="Adicionar telefone" > <i class="material-icons center">phone</i> </button> </a> </td>
+					<td sec:authorize="hasRole('ROLE_ADMIN')"> <a th:href ="@{/editarpessoa/{idPessoa}(idPessoa=${pessoa.id})}"> Editar </a> </td>
+					<td sec:authorize="hasRole('ROLE_ADMIN')"> <a th:href ="@{/removerpessoa/{idPessoa}(idPessoa=${pessoa.id})}" onclick="return confirm('Deseja remover este usuário?')? true : false"> Excluir </a> </td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<br> <br>
+		
+		<div style="text-align:center; font-size:18px;">
+		
+			<span th:if="${pessoas.hasPrevious()}">
+				<a th:href="@{/pagepessoas(page=${pessoas.number - 1}, size=${pessoas.size}, pesquisaNome=${pesquisaNome})}">
+					<button class="waves-effect waves-light btn"> Anterior <i class="material-icons left">navigate_before</i> </button>
+				</a>
+			</span>
+		
+			<th:block th:each = "i: ${#numbers.sequence(0, pessoas.totalPages - 1)}">
+				<a th:href="@{/pagepessoas(page=${i}, size=${pessoas.size}, pesquisaNome=${pesquisaNome})}">
+					<button class="waves-effect waves-light btn">[[${i} + 1]] </button>
+				</a>
+			</th:block>
+			
+			<span th:if="${pessoas.hasNext()}">
+				<a th:href="@{/pagepessoas(page=${pessoas.number + 1}, size=${pessoas.size}, pesquisaNome=${pesquisaNome})}">
+					<button class="waves-effect waves-light btn"> Próximo <i class="material-icons right">navigate_next</i> </button>
+				</a>
+			</span>
+			
+		</div>
+		
+		
+		
+		<!-- Declaração de modais -->
+		<div id="addTelefone" class="modal">
+    		<div class="modal-content">
+      			<h4>Adicionar Telefone para <span th:value="${objetoPessoa.nome}"></span> </h4> 
+      			<form action="" >
+      				<p> <input type="hidden" name="pessoa" th:value="${objetoPessoa.id}"> </p>
+      				<p> Telefone: <input type="number" name="numero" required="required"> </p>
+      				<p> <button type="submit" class="waves-effect waves-light btn"> Salvar <i class="material-icons right">save</i> </button> </p>   				
+      			</form>
+    		</div>
+    		<div class="modal-footer">
+      			<button class="modal-close waves-effect waves-light btn">Fechar</button>
+    		</div>
+  		</div>
+		
+		<!-- Imports de javascript -->
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>		
+		<!-- Funções javascript -->
+		<script type="text/javascript">
+			const elemsModal = document.querySelectorAll(".modal");
+			const instancesModal = M.Modal.init(elemsModal, {
+			});
+		</script>
+		
+		<script type="text/javascript">
+			var elems = document.querySelectorAll('select');
+    		var instances = M.FormSelect.init(elems, {
+  		});
+		</script>
+		
+		 <script type="text/javascript">
+        	$(document).ready(function() {			
+				//Inicio funções do campo cep
+            	function limpa_formulário_cep() {
+                	// Limpa valores do formulário de cep.
+                	$("#nomeLogradouro").val("");
+                	$("#bairro").val("");
+                	$("#localidade").val("");
+                	$("#uf").val("");
+            	}
+           	 	//Quando o campo cep perde o foco.
+            	$("#cep").blur(function() {
+
+                //Nova variável "cep" somente com dígitos.
+                var cep = $(this).val().replace(/\D/g, '');
+
+                //Verifica se campo cep possui valor informado.
+                if (cep != "") {
+
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
+
+                    //Valida o formato do CEP.
+                    if(validacep.test(cep)) {
+
+                        //Consulta o webservice viacep.com.br/
+                        $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                            if (!("erro" in dados)) {
+                                //Atualiza os campos com os valores da consulta.
+                                $("#logradouro").val(dados.logradouro);
+                                $("#bairro").val(dados.bairro);
+                                $("#localidade").val(dados.localidade);
+                                $("#uf").val(dados.uf);
+                            } //end if.
+                            else {
+                                //CEP pesquisado não foi encontrado.
+                                limpa_formulário_cep();
+                                alert("CEP não encontrado.");
+                            }
+                        });
+                    } //end if.
+                    else {
+                        //cep é inválido.
+                        limpa_formulário_cep();
+                        alert("Formato de CEP inválido.");
+                    }
+                } //end if.
+                else {
+                    //cep sem valor, limpa formulário.
+                    limpa_formulário_cep();
+                }
+            });
+        });
+    </script>
+		
+	</body>
+		
+</html>
